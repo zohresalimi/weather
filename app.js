@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function(){
     
     document.querySelector('#add').addEventListener('click', (e) => {
         e.preventDefault();
+        createHeader()
         const temperature = document.querySelector('#temperature').value;
         const date = document.querySelector('#date').value;
         if(!temperature || !date) {
@@ -11,19 +12,18 @@ document.addEventListener("DOMContentLoaded", function(){
         }
         const newObj = {temperature, date}
         weatherList.push(newObj)
-        addHeader()
         addRow(newObj)
         document.querySelector('#temperature').value=''
         document.querySelector('#date').value=''
     })
 });
 
-const addHeader = () =>{
+const createHeader = () =>{
     let inputs = document.querySelectorAll('input.form__input');
     var recordTable = document.querySelector('table')
     if(!recordTable.tHead){
         var tHead = recordTable.createTHead();
-        var tr = tHead.insertRow(-1);
+        var tr = tHead.insertRow();
         inputs.forEach((input) =>{
             var th = document.createElement('th');
             th.innerHTML= input.getAttribute('name')
