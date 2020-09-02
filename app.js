@@ -41,8 +41,9 @@ const addRow = (data) =>{
 
     for(let j=0; j<header.length; j++){
         var cell = document.createElement('td')
-        cell.innerHTML = data[header]
+        cell.innerHTML = data[header[j]]
         tr.appendChild(cell)
     }
-    table.appendChild(tr)
+    tbody.appendChild(tr)
+    table.appendChild(tbody)
 }
