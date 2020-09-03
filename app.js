@@ -1,6 +1,6 @@
+let weatherList = [];
 
 document.addEventListener("DOMContentLoaded", function(){
-    const weatherList = [];
     
     document.querySelector('#add').addEventListener('click', (e) => {
         e.preventDefault();
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function(){
         const newObj = {temperature, date}
         weatherList.push(newObj)
         bubbleSortDate(weatherList)
-        RenderTable(weatherList)
+        renderTable(weatherList)
         document.querySelector('#temperature').value=''
         document.querySelector('#date').value=''
     })
@@ -44,12 +44,10 @@ document.addEventListener("DOMContentLoaded", function(){
 
     document.querySelector('#seed').addEventListener('click', (e) => {
         e.preventDefault();
-        if(weatherList.length){
-            const weatherSeedList = getSeedData(5);
-            const sortedList = bubbleSortDate(weatherSeedList)
-            RenderTable(sortedList)
-
-        }
+        weatherList = getSeedData(5);
+        const sortedList = bubbleSortDate(weatherList)
+        createHeader()
+        renderTable(sortedList)
     })
 });
 
@@ -69,7 +67,7 @@ const createHeader = () =>{
     }
 }
 
-const RenderTable = (list) =>{
+const renderTable = (list) =>{
     const table = document.querySelector('table')
     const tableRef = table.getElementsByTagName('tbody')[0];
     if(tableRef){
@@ -128,28 +126,15 @@ const calculateAverage = (arr) =>{
     arr.forEach((item) =>{
         sum += parseInt(item.temperature)
     })
-
     return sum/len
 }
-
-
-weather = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => {
-    return {
-      date: new Date(
-        `2020-${Math.ceil(Math.random() * 12)}-${Math.ceil(
-          Math.random() * 28
-        )}`
-      ).toISOString(),
-      temperature: Math.floor(Math.random() * num * 10),
-    };
-  });
 
 
   const seedData = () =>{
       const date = new Date(`2020-${Math.ceil(Math.random() * 12)}-${Math.ceil( Math.random() * 28)}`).toISOString().split('T')[0];
       var temperature = Math.floor(Math.random()*30) + 1; // this will get a number between 1 and 30;
       temperature *= Math.floor(Math.random()*2) == 1 ? 1 : -1;// this will add minus sign in 50% of cases
-      return {date, temperature}
+      return {temperature, date }
   }
 
   const getSeedData = (reapetNumber) =>{
@@ -157,6 +142,7 @@ weather = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => {
     for(let num = 0; num<reapetNumber; num++){
         weatherSeedData.push(seedData())
     }
+    return weatherSeedData
   }
 
 
