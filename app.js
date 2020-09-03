@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function(){
         weatherList.push(newObj)
         bubbleSortDate(weatherList)
         renderTable(weatherList)
+        createChart(weatherList)
         document.querySelector('#temperature').value=''
         document.querySelector('#date').value=''
     })
@@ -48,8 +49,50 @@ document.addEventListener("DOMContentLoaded", function(){
         const sortedList = bubbleSortDate(weatherList)
         createHeader()
         renderTable(sortedList)
+        createChart(sortedList)
     })
+
+
+    
+    
+
 });
+
+const createChart= (list) =>{
+    const date = []
+    const temperatures = []
+    list.forEach((item) => {
+        date.push(item.date)
+        temperatures.push(item.temperature)
+    })
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: date,
+          datasets: [{ 
+              data: temperatures,
+              label: "Africa",
+              borderColor: "#3e95cd",
+              fill: false
+            }
+          ]
+        },
+        options: {
+          title: {
+            display: true,
+            text: 'World population per region (in millions)'
+          }
+        }
+      });
+}
+
+const getDates = (list) =>{
+
+    console.log(date)
+    return date
+}
 
 const createHeader = () =>{
     let inputs = document.querySelectorAll('input.form__input');

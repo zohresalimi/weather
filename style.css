@@ -136,3 +136,20 @@ body {
     padding: 10px 25px;
     width: 400px;
   }
+
+  .wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .column {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    flex: 1;
+  }
+
+.column table{
+  flex: 0 0 15;
+}
