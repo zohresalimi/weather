@@ -16,19 +16,38 @@ document.addEventListener("DOMContentLoaded", function(){
         document.querySelector('#temperature').value=''
         document.querySelector('#date').value=''
     })
+
+    document.querySelector('#maxTemp').addEventListener('click', (e) => {
+        e.preventDefault();
+        if(weatherList.length){
+            const sortedList = bubblesort(weatherList)
+            document.getElementById('results').innerHTML = `Maximum Temprature is: ${sortedList[sortedList.length - 1].temperature}`
+        }
+    })
+    
+    document.querySelector('#minTemp').addEventListener('click', (e) => {
+        e.preventDefault();
+        if(weatherList.length){
+            const sortedList = bubblesort(weatherList)
+            document.getElementById('results').innerHTML = `Minimum Temprature is: ${sortedList[0].temperature}`
+        }
+        // const minTemp = getMinTemperature(weatherList)
+      })
 });
 
 const createHeader = () =>{
     let inputs = document.querySelectorAll('input.form__input');
-    var recordTable = document.querySelector('table')
-    if(!recordTable.tHead){
-        var tHead = recordTable.createTHead();
-        var tr = tHead.insertRow();
+    var table = document.querySelector('table')
+    if(!table.tHead){
+        var tHead = document.createElement('thead')
+        var tr = document.createElement('tr')
         inputs.forEach((input) =>{
             var th = document.createElement('th');
             th.innerHTML= input.getAttribute('name')
             tr.appendChild(th)
         })
+        tHead.appendChild(tr)
+        table.appendChild(tHead)
     }
 }
 
@@ -46,3 +65,24 @@ const addRow = (data) =>{
     tbody.appendChild(tr)
     table.appendChild(tbody)
 }
+
+
+const bubblesort = (arr)=> {
+    var len = arr.length;
+  
+    for (var i = 0; i < len ; i++) {
+      for(var j = 0 ; j < len - i - 1; j++){
+      if (+arr[j].temperature > +arr[j + 1].temperature) {
+        // swap
+        var temp = arr[j];
+        arr[j] = arr[j+1];
+        arr[j + 1] = temp;
+      }
+     }
+    }
+    return arr;
+  }
+
+
+
+
