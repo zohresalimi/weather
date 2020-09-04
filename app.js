@@ -1,34 +1,37 @@
 let weatherList = [];
 
 document.addEventListener("DOMContentLoaded", function(){
-    
-    document.querySelector('#add').addEventListener('click', (e) => {
-        e.preventDefault();
-        createHeader()
-        const temperature = document.querySelector('#temperature').value;
-        const date = document.querySelector('#date').value;
-        if(!temperature || !date) {
-            return false
-        }
-        const newObj = {temperature, date}
-        weatherList.push(newObj)
-        bubbleSortDate(weatherList)
-        renderTable(weatherList)
-        createChart(weatherList)
-        document.querySelector('#temperature').value=''
-        document.querySelector('#date').value=''
+    document.querySelector('input').addEventListener('select', (event) =>{
+        console.log(event.currentTarget)
+        isInputValid(event.currentTarget)
     })
 
-    document.querySelector('#maxTemp').addEventListener('click', (e) => {
-        e.preventDefault();
+    document.querySelector('#add').addEventListener('click', (event) => {
+        event.preventDefault();
+        const temperature = document.querySelector('#temperature').value;
+        const date = document.querySelector('#date').value;
+        if(isFormValid()){
+            createHeader()
+            weatherList.push({temperature, date})
+            bubbleSortDate(weatherList)
+            renderTable(weatherList)
+            createChart(weatherList)
+            document.querySelector('#temperature').value=''
+            document.querySelector('#date').value=''
+        }
+        
+    })
+
+    document.querySelector('#maxTemp').addEventListener('click', (event) => {
+        event.preventDefault();
         if(weatherList.length){
             const sortedList = bubbleSortTemperature(weatherList)
             document.getElementById('results').innerHTML = `Maximum Temperature is: ${sortedList[sortedList.length - 1].temperature}`
         }
     })
     
-    document.querySelector('#minTemp').addEventListener('click', (e) => {
-        e.preventDefault();
+    document.querySelector('#minTemp').addEventListener('click', (event) => {
+        event.preventDefault();
         if(weatherList.length){
             const sortedList = bubbleSortTemperature(weatherList)
             document.getElementById('results').innerHTML = `Minimum Temperature is: ${sortedList[0].temperature}`
@@ -58,6 +61,48 @@ document.addEventListener("DOMContentLoaded", function(){
 
 });
 
+
+// Field Validation
+const highlightInvalidField = (element) => {
+    const span = document.createElement('span')
+    span.className = 'validation invalid-feedback'
+    const dataValue = element.getAttribute('data-value')
+    span.innerText = `Please Fille in ${dataValue} Field`
+    element.classList.add('invalid-field')
+    const parentElement = element.parentElement
+    parentElement.insertBefore(span, null)
+}
+
+const unHighlightField = (element) => {
+    element.classList.remove('invalid-field')
+    const parentElement = element.parentElement
+    parentElement.removeChild(element.nextElementSibling)
+}
+
+const isInputValid = (element) =>{
+    if(element.value === ''){
+        highlightInvalidField(element)
+        return false
+    }else{
+        if(element.classList.contains('invalid-field')){
+            unHighlightField(element)
+        }
+        return true
+    }
+}
+
+const isFormValid = () =>{
+    const errorList = []
+    const inputs = document.forms["form"].getElementsByTagName("input");
+    for(let i=0; i<inputs.length; i++) {
+        const isValid = isInputValid(inputs[i])
+        if(!isValid){
+            errorList.push(inputs[i])
+        }
+    }
+    return errorList.length === 0
+}
+
 const createChart= (list) =>{
     const date = []
     const temperatures = []
@@ -73,7 +118,7 @@ const createChart= (list) =>{
           labels: date,
           datasets: [{ 
               data: temperatures,
-              label: "Africa",
+              label: "Temperature",
               borderColor: "#3e95cd",
               fill: false
             }
@@ -82,7 +127,7 @@ const createChart= (list) =>{
         options: {
           title: {
             display: true,
-            text: 'World population per region (in millions)'
+            text: 'Temperature Graph Line'
           }
         }
       });
