@@ -1,8 +1,7 @@
 let weatherList = [];
 
 document.addEventListener("DOMContentLoaded", function(){
-    document.querySelector('input').addEventListener('select', (event) =>{
-        console.log(event.currentTarget)
+    document.querySelector('input').addEventListener('change', (event) =>{
         isInputValid(event.currentTarget)
     })
 
@@ -54,16 +53,14 @@ document.addEventListener("DOMContentLoaded", function(){
         renderTable(sortedList)
         createChart(sortedList)
     })
-
-
-    
-    
-
 });
 
 
-// Field Validation
+// form Validation
 const highlightInvalidField = (element) => {
+    if(element.classList.contains('invalid-field')){
+        return false;
+    }
     const span = document.createElement('span')
     span.className = 'validation invalid-feedback'
     const dataValue = element.getAttribute('data-value')
@@ -74,9 +71,12 @@ const highlightInvalidField = (element) => {
 }
 
 const unHighlightField = (element) => {
-    element.classList.remove('invalid-field')
-    const parentElement = element.parentElement
-    parentElement.removeChild(element.nextElementSibling)
+    if(element.classList.contains('invalid-field')){
+        element.classList.remove('invalid-field')
+        const parentElement = element.parentElement
+        parentElement.removeChild(element.nextElementSibling)
+    }
+
 }
 
 const isInputValid = (element) =>{
@@ -84,9 +84,7 @@ const isInputValid = (element) =>{
         highlightInvalidField(element)
         return false
     }else{
-        if(element.classList.contains('invalid-field')){
-            unHighlightField(element)
-        }
+        unHighlightField(element)
         return true
     }
 }
@@ -103,6 +101,7 @@ const isFormValid = () =>{
     return errorList.length === 0
 }
 
+// render line chart
 const createChart= (list) =>{
     const date = []
     const temperatures = []
@@ -133,12 +132,8 @@ const createChart= (list) =>{
       });
 }
 
-const getDates = (list) =>{
 
-    console.log(date)
-    return date
-}
-
+// create table header
 const createHeader = () =>{
     let inputs = document.querySelectorAll('input.form__input');
     var table = document.querySelector('table')
@@ -155,6 +150,7 @@ const createHeader = () =>{
     }
 }
 
+//render tabel
 const renderTable = (list) =>{
     const table = document.querySelector('table')
     const tableRef = table.getElementsByTagName('tbody')[0];
@@ -175,7 +171,7 @@ const renderTable = (list) =>{
     table.appendChild(tbody)
 }
 
-
+// sort data 
 const bubbleSortTemperature = (arr)=> {
     var len = arr.length;
   
@@ -208,6 +204,8 @@ const bubbleSortTemperature = (arr)=> {
     return arr;
   }
 
+
+  // calculate average 
 const calculateAverage = (arr) =>{
     const len = arr.length;
     let sum = 0;
