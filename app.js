@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function(){
         if(isFormValid()){
             createHeader()
             weatherList.push({temperature, date})
-            bubbleSortDate(weatherList)
+            sortData(weatherList, 'date')
             renderTable(weatherList)
             createChart(weatherList)
             document.querySelector('#temperature').value=''
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function(){
     document.querySelector('#maxTemp').addEventListener('click', (event) => {
         event.preventDefault();
         if(weatherList.length){
-            const sortedList = bubbleSortTemperature(weatherList)
+            const sortedList = sortData(weatherList)
             document.getElementById('results').innerHTML = `Maximum Temperature is: ${sortedList[sortedList.length - 1].temperature}`
         }
     })
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function(){
     document.querySelector('#minTemp').addEventListener('click', (event) => {
         event.preventDefault();
         if(weatherList.length){
-            const sortedList = bubbleSortTemperature(weatherList)
+            const sortedList = sortData(weatherList)
             document.getElementById('results').innerHTML = `Minimum Temperature is: ${sortedList[0].temperature}`
         }
     })
@@ -47,8 +47,8 @@ document.addEventListener("DOMContentLoaded", function(){
 
     document.querySelector('#seed').addEventListener('click', (e) => {
         e.preventDefault();
-        weatherList = getSeedData(5);
-        const sortedList = bubbleSortDate(weatherList)
+        weatherList = getSeedData(12);
+        const sortedList = sortData(weatherList, 'date')
         createHeader()
         renderTable(sortedList)
         createChart(sortedList)
@@ -138,10 +138,10 @@ const createHeader = () =>{
     let inputs = document.querySelectorAll('input.form__input');
     var table = document.querySelector('table')
     if(!table.tHead){
-        var tHead = document.createElement('thead')
-        var tr = document.createElement('tr')
+        let tHead = document.createElement('thead')
+        let tr = document.createElement('tr')
         inputs.forEach((input) =>{
-            var th = document.createElement('th');
+            let th = document.createElement('th');
             th.innerHTML= input.getAttribute('name')
             tr.appendChild(th)
         })
@@ -171,29 +171,13 @@ const renderTable = (list) =>{
     table.appendChild(tbody)
 }
 
-// sort data 
-const bubbleSortTemperature = (arr)=> {
+// Bubble sort method for sorting data
+  const sortData = (arr, sortBy= "temperature")=> {
     var len = arr.length;
   
     for (var i = 0; i < len ; i++) {
       for(var j = 0 ; j < len - i - 1; j++){
-      if (+arr[j].temperature > +arr[j + 1].temperature) {
-        // swap
-        var temp = arr[j];
-        arr[j] = arr[j+1];
-        arr[j + 1] = temp;
-      }
-     }
-    }
-    return arr;
-  }
-
-  const bubbleSortDate = (arr)=> {
-    var len = arr.length;
-  
-    for (var i = 0; i < len ; i++) {
-      for(var j = 0 ; j < len - i - 1; j++){
-      if (arr[j].date > arr[j + 1].date) {
+      if (arr[j][sortBy] > arr[j + 1][sortBy]) {
         // swap
         var temp = arr[j];
         arr[j] = arr[j+1];
@@ -212,12 +196,13 @@ const calculateAverage = (arr) =>{
     arr.forEach((item) =>{
         sum += parseInt(item.temperature)
     })
-    return sum/len
+    return (sum/len).toFixed(1)
 }
 
-
-  const seedData = () =>{
-      const date = new Date(`2020-${Math.ceil(Math.random() * 12)}-${Math.ceil( Math.random() * 28)}`).toISOString().split('T')[0];
+// generate seed data
+  const seedData = (month) =>{
+      const randDay = Math.ceil( Math.random() * 28)
+      const date = new Date(`2020-${month}-${randDay}`).toISOString().split('T')[0];
       var temperature = Math.floor(Math.random()*30) + 1; // this will get a number between 1 and 30;
       temperature *= Math.floor(Math.random()*2) == 1 ? 1 : -1;// this will add minus sign in 50% of cases
       return {temperature, date }
@@ -225,10 +210,25 @@ const calculateAverage = (arr) =>{
 
   const getSeedData = (reapetNumber) =>{
       const weatherSeedData = []
+      const getMonth = createMonthGenerator()
     for(let num = 0; num<reapetNumber; num++){
-        weatherSeedData.push(seedData())
+        weatherSeedData.push(seedData(getMonth()))
     }
     return weatherSeedData
   }
 
+  const createMonthGenerator = () => {
+      const monthList = []
 
+      const getUniqueRandom = () => {
+        let randMonth = Math.ceil(Math.random() * 12)
+        if(monthList.includes(randMonth)){
+            randMonth = getUniqueRandom()
+        }
+        monthList.push(randMonth)
+        return randMonth
+      }
+
+      return getUniqueRandom
+  }
+    
